@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Search, FileText, X, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Upload, Search, FileText, X, Loader2, AlertCircle, CheckCircle, Sparkles, BookOpen, Database } from 'lucide-react';
 import { ApiService, UploadDocumentRequest, QueryRequest } from './services/api';
 
 interface UploadedDocument {
@@ -222,36 +222,53 @@ function App() {
     }
   };
 
+  const readyDocCount = documents.filter(d => d.status === 'ready').length;
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Unthinkable KBSE</h1>
-              <p className="text-gray-600 mt-1">Upload documents and ask questions</p>
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Unthinkable KBSE
+                </h1>
+                <p className="text-sm text-slate-600">Knowledge Base Search Engine</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-sm ${
+            
+            <div className="flex items-center gap-4">
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg text-sm text-slate-600">
+                <Database className="w-4 h-4" />
+                <span className="font-medium">{readyDocCount}</span>
+                <span>documents</span>
+              </div>
+              
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 isBackendHealthy === null 
-                  ? 'bg-yellow-100 text-yellow-800' 
+                  ? 'bg-amber-100 text-amber-800' 
                   : isBackendHealthy 
-                    ? 'bg-green-100 text-green-800' 
+                    ? 'bg-emerald-100 text-emerald-800' 
                     : 'bg-red-100 text-red-800'
               }`}>
-                <div className={`w-2 h-2 rounded-full ${
+                <div className={`w-2 h-2 rounded-full animate-pulse ${
                   isBackendHealthy === null 
-                    ? 'bg-yellow-400' 
+                    ? 'bg-amber-500' 
                     : isBackendHealthy 
-                      ? 'bg-green-400' 
-                      : 'bg-red-400'
+                      ? 'bg-emerald-500' 
+                      : 'bg-red-500'
                 }`}></div>
                 <span>
                   {isBackendHealthy === null 
-                    ? 'Checking...' 
+                    ? 'Connecting' 
                     : isBackendHealthy 
-                      ? 'Backend Online' 
-                      : 'Backend Offline'}
+                      ? 'Online' 
+                      : 'Offline'}
                 </span>
               </div>
             </div>
@@ -260,16 +277,25 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-5 gap-6">
           {/* Left Column - Document Upload */}
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Upload Documents</h2>
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Upload className="w-5 h-5" />
+                  Upload Documents
+                </h2>
+              </div>
               
-              {/* File Upload */}
-              <div className="mb-6">
+              <div className="p-6 space-y-4">
+                {/* File Upload */}
                 <label className="block">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors cursor-pointer bg-white">
+                  <div className={`border-2 border-dashed rounded-xl p-8 transition-all cursor-pointer ${
+                    uploading 
+                      ? 'border-blue-300 bg-blue-50' 
+                      : 'border-slate-300 bg-slate-50 hover:border-blue-400 hover:bg-blue-50'
+                  }`}>
                     <input
                       type="file"
                       multiple
@@ -278,91 +304,121 @@ function App() {
                       className="hidden"
                       disabled={uploading}
                     />
-                    <div className="flex flex-col items-center gap-2 text-center">
-                      <Upload className="w-8 h-8 text-gray-400" />
+                    <div className="flex flex-col items-center gap-3 text-center">
+                      {uploading ? (
+                        <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+                      ) : (
+                        <div className="bg-white p-3 rounded-xl shadow-sm">
+                          <Upload className="w-8 h-8 text-blue-600" />
+                        </div>
+                      )}
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {uploading ? 'Uploading...' : 'Click to upload documents'}
+                        <p className="text-base font-semibold text-slate-900">
+                          {uploading ? 'Uploading files...' : 'Click to upload'}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Supports .txt, .pdf and .json files • Multiple files allowed
+                        <p className="text-sm text-slate-500 mt-1">
+                          PDF, TXT, JSON • Multiple files supported
                         </p>
                       </div>
                     </div>
                   </div>
                 </label>
-              </div>
 
-              {/* Text Upload */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Or paste text directly:
-                </label>
-                <textarea
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  rows={4}
-                  placeholder="Paste your text content here..."
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && e.ctrlKey) {
-                      const text = e.currentTarget.value.trim();
-                      if (text) {
-                        handleTextUpload(text);
-                        e.currentTarget.value = '';
+                {/* Text Upload */}
+                <div className="relative">
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Or paste text directly
+                  </label>
+                  <textarea
+                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none bg-white transition-shadow"
+                    rows={4}
+                    placeholder="Paste your content here and press Ctrl+Enter..."
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && e.ctrlKey) {
+                        const text = e.currentTarget.value.trim();
+                        if (text) {
+                          handleTextUpload(text);
+                          e.currentTarget.value = '';
+                        }
                       }
-                    }
-                  }}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Press Ctrl+Enter to upload text
-                </p>
-              </div>
-
-              {/* Document List */}
-              {documents.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-700">Uploaded Documents</h3>
-                  {documents.map((doc) => (
-                    <div key={doc.id} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        {getStatusIcon(doc.status)}
-                        <FileText className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">{doc.name}</p>
-                          <p className="text-xs text-gray-500">
-                            {formatFileSize(doc.size)}
-                            {doc.status === 'ready' && doc.chunks != null && ` • ${doc.chunks} chunks`}
-                            {doc.status === 'error' && doc.error && ` • ${doc.error}`}
-                          </p>
-                        </div>
-                      </div>
-                      <button 
-                        onClick={() => removeDocument(doc.id)} 
-                        className="p-1 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
-                      >
-                        <X className="w-4 h-4 text-gray-400" />
-                      </button>
-                    </div>
-                  ))}
+                    }}
+                  />
+                  <div className="absolute bottom-3 right-3 text-xs text-slate-400 bg-white px-2 py-1 rounded">
+                    Ctrl+Enter to upload
+                  </div>
                 </div>
-              )}
+
+                {/* Document List */}
+                {documents.length > 0 && (
+                  <div className="space-y-3 mt-6">
+                    <h3 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      Uploaded Documents ({documents.length})
+                    </h3>
+                    <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+                      {documents.map((doc) => (
+                        <div key={doc.id} className={`flex items-center justify-between p-3 rounded-xl transition-all ${
+                          doc.status === 'ready' 
+                            ? 'bg-emerald-50 border border-emerald-200' 
+                            : doc.status === 'error'
+                            ? 'bg-red-50 border border-red-200'
+                            : 'bg-blue-50 border border-blue-200'
+                        }`}>
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            {getStatusIcon(doc.status)}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-slate-900 truncate">{doc.name}</p>
+                              <p className="text-xs text-slate-500 mt-0.5">
+                                {formatFileSize(doc.size)}
+                                {doc.status === 'ready' && doc.chunks != null && ` • ${doc.chunks} chunks`}
+                                {doc.status === 'error' && doc.error && ` • ${doc.error}`}
+                              </p>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => removeDocument(doc.id)} 
+                            className="p-1.5 hover:bg-white rounded-lg transition-colors flex-shrink-0 ml-2"
+                          >
+                            <X className="w-4 h-4 text-slate-400 hover:text-red-500" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {documents.length === 0 && (
+                  <div className="text-center py-8">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-100 rounded-full mb-3">
+                      <FileText className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <p className="text-sm text-slate-500">No documents uploaded yet</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Right Column - Query Interface */}
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Ask Questions</h2>
+          <div className="lg:col-span-3 space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  Ask Questions
+                </h2>
+              </div>
               
-              <div className="space-y-4">
+              <div className="p-6 space-y-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="text"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    placeholder="Ask a question about your documents..."
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="What would you like to know about your documents?"
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                     disabled={isSearching}
                   />
                 </div>
@@ -370,70 +426,86 @@ function App() {
                 <button
                   onClick={handleSearch}
                   disabled={!question.trim() || isSearching || documents.filter(d => d.status === 'ready').length === 0}
-                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl disabled:shadow-none flex items-center justify-center gap-2"
                 >
                   {isSearching ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-5 h-5 animate-spin" />
                       Searching...
                     </>
                   ) : (
                     <>
-                      <Search className="w-4 h-4" />
+                      <Search className="w-5 h-5" />
                       Ask Question
                     </>
                   )}
                 </button>
 
                 {documents.filter(d => d.status === 'ready').length === 0 && documents.length > 0 && (
-                  <p className="text-sm text-yellow-600 bg-yellow-50 p-3 rounded-lg">
-                    Please wait for documents to finish uploading before asking questions.
-                  </p>
+                  <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-amber-800">
+                      <p className="font-medium">Please wait for documents to finish uploading before asking questions.</p>
+                    </div>
+                  </div>
                 )}
 
                 {documents.length === 0 && (
-                  <p className="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    Upload some documents first to start asking questions.
-                  </p>
+                  <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                    <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium">Upload some documents first to start asking questions.</p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Answer Section */}
             {(answer || sources.length > 0) && (
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Answer</h3>
+              <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Answer
+                  </h3>
                 </div>
                 
-                {answer && (
-                  <div className="mb-6">
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{answer}</p>
-                  </div>
-                )}
-
-                {sources.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Sources ({sources.length})</h4>
-                    <div className="space-y-3">
-                      {sources.map((source, idx) => (
-                        <div key={idx} className="text-sm text-gray-600 border border-gray-200 rounded p-3 bg-gray-50">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-gray-900 font-mono text-xs bg-white px-2 py-1 rounded">
-                              [{idx + 1}]
-                            </span>
-                            <span className="text-gray-900 font-medium">
-                              {source.filename || source.document_id}
-                            </span>
-                            <span className="text-gray-500">•</span>
-                            <span className="font-mono text-xs">chunk {source.chunk_index}</span>
-                          </div>
-                          <p className="text-gray-700 line-clamp-3">{source.content}</p>
-                        </div>
-                      ))}
+                <div className="p-6">
+                  {answer && (
+                    <div className="mb-6">
+                      <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{answer}</p>
                     </div>
-                  </div>
-                )}
+                  )}
+
+                  {sources.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                        <FileText className="w-4 h-4" />
+                        Sources ({sources.length})
+                      </h4>
+                      <div className="space-y-3">
+                        {sources.map((source, idx) => (
+                          <div key={idx} className="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-slate-100 transition-colors">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <span className="text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 px-2.5 py-1 rounded-lg">
+                                [{idx + 1}]
+                              </span>
+                              <span className="text-sm font-semibold text-slate-900">
+                                {source.filename || source.document_id}
+                              </span>
+                              <span className="text-slate-400">•</span>
+                              <span className="text-xs font-mono text-slate-500 bg-white px-2 py-1 rounded">
+                                chunk {source.chunk_index}
+                              </span>
+                            </div>
+                            <p className="text-sm text-slate-600 leading-relaxed line-clamp-3">{source.content}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -441,21 +513,21 @@ function App() {
 
         {/* Backend Status Warning */}
         {isBackendHealthy === false && (
-          <div className="mt-8 bg-red-50 border border-red-200 rounded-md p-4">
-            <div className="flex">
+          <div className="mt-8 bg-red-50 border-2 border-red-200 rounded-2xl p-6 shadow-lg">
+            <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
-                <AlertCircle className="h-5 w-5 text-red-400" />
+                <div className="bg-red-100 p-2 rounded-xl">
+                  <AlertCircle className="h-6 w-6 text-red-600" />
+                </div>
               </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">
+              <div className="flex-1">
+                <h3 className="text-base font-bold text-red-900 mb-2">
                   Backend Connection Failed
                 </h3>
-                <div className="mt-2 text-sm text-red-700">
-                  <p>
-                    Unable to connect to the backend server. Please ensure the backend is running on{' '}
-                    <code className="bg-red-100 px-1 rounded">http://127.0.0.1:8000</code>
-                  </p>
-                </div>
+                <p className="text-sm text-red-700 leading-relaxed">
+                  Unable to connect to the backend server. Please ensure the backend is running on{' '}
+                  <code className="bg-red-100 px-2 py-1 rounded font-mono text-xs">http://127.0.0.1:8000</code>
+                </p>
               </div>
             </div>
           </div>
@@ -463,10 +535,12 @@ function App() {
       </main>
       
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="text-center text-sm text-gray-500">
-            by Harshita Singh
+      <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="text-center">
+            <p className="text-sm text-slate-600">
+              by <span className="font-semibold text-slate-900">Harshita Singh</span>
+            </p>
           </div>
         </div>
       </footer>

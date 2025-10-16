@@ -1,8 +1,8 @@
 # Unthinkable KBSE
 
-A powerful document querying system that allows you to upload documents and ask questions about their content using AI-powered search and response generation.
+A document querying system that allows you to upload documents and ask questions about their content using AI-powered search and response generation.
 
-## 🚀 Features
+##  Features
 
 - **Document Upload**: Support for PDF, TXT, JSON files and raw text input
 - **AI-Powered Querying**: Ask natural language questions about your documents
@@ -34,7 +34,7 @@ A powerful document querying system that allows you to upload documents and ask 
 - **Database**: In-memory SQLite (automatic fallback, no setup required)
 - **Scripts**: Cross-platform startup scripts (Windows/Linux)
 
-## 📋 Project Workflow
+##  Project Workflow
 
 ### 1. Document Ingestion Process
 ```
@@ -73,7 +73,7 @@ Question → Embedding Generation → Similarity Search → Context Retrieval �
 - `GET /health` - API health check
 - `GET /` - API information
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Python 3.11+
@@ -152,7 +152,7 @@ yarn dev
 - **Backend API**: http://127.0.0.1:8000
 - **API Docs**: http://127.0.0.1:8000/docs
 
-## 📖 Usage Examples
+##  Usage Examples
 
 ### 1. Web Interface
 1. Open http://localhost:5173
@@ -202,7 +202,7 @@ curl -X POST "http://127.0.0.1:8000/api/v1/text/query" \
 - **API URL**: Configured in `frontend/src/config/api.ts`
 - **Theme**: Customizable in `frontend/src/constants/default-theme.ts`
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 query-mind-ai/
@@ -229,7 +229,7 @@ query-mind-ai/
 └── README.md             # This file
 ```
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -252,13 +252,12 @@ Set `DEBUG=true` in `.env` to enable:
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - FastAPI for the excellent Python web framework
 - React and Vite for the modern frontend stack
 - Groq and Google for AI services
 - Shadcn/ui for beautiful UI components
+
+## Made with ❤️ by Harshita Singh

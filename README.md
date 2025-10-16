@@ -11,7 +11,7 @@ A document querying system that allows you to upload documents and ask questions
 - **Modern UI**: React-based frontend with TypeScript and Tailwind CSS
 - **Flexible Database**: PostgreSQL with in-memory fallback for development
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Framework**: FastAPI (Python 3.11+)

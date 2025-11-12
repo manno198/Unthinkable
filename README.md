@@ -1,263 +1,399 @@
-# Unthinkable KBSE
+# SyncCodes - Project Documentation
 
-A document querying system that allows you to upload documents and ask questions about their content using AI-powered search and response generation.
+## 📋 Table of Contents
 
-##  Features
+1. [Project Overview](#project-overview)
+2. [Technology Stack](#technology-stack)
+3. [Architecture & System Flow](#architecture--system-flow)
+4. [Features](#features)
+5. [AI Model & Fine-Tuning](#ai-model--fine-tuning)
+6. [Setup & Installation](#setup--installation)
+7. [Project Screenshots](#project-screenshots)
+8. [Known Issues](#known-issues)
+9. [Future Enhancements](#future-enhancements)
 
-- **Document Upload**: Support for PDF, TXT, JSON files and raw text input
-- **AI-Powered Querying**: Ask natural language questions about your documents
-- **Multiple AI Providers**: Groq (primary) and Gemini (fallback) for embeddings and text generation
-- **JSON API**: RESTful API for programmatic document management
-- **Modern UI**: React-based frontend with TypeScript and Tailwind CSS
-- **Flexible Database**: PostgreSQL with in-memory fallback for development
+---
 
-##  Tech Stack
+## 🎯 Project Overview
 
-### Backend
-- **Framework**: FastAPI (Python 3.11+)
-- **AI Services**: 
-  - Groq API (primary) - for embeddings and text generation
-  - Google Gemini API (fallback) - for embeddings and text generation
-- **Database**: PostgreSQL with in-memory SQLite fallback
-- **Document Processing**: PyPDF, BeautifulSoup4
-- **Server**: Uvicorn with auto-reload
+**SyncCodes** is a real-time collaborative coding platform that enables multiple users to code, communicate, and collaborate seamlessly. The platform integrates code editing, video conferencing, code execution, collaborative whiteboard, and AI-powered interview question generation in a single unified environment.
+
+### Key Highlights
+
+- ✅ Real-time code collaboration with instant synchronization
+- ✅ WebRTC-powered video conferencing and screen sharing
+- ✅ Multi-language code execution (JavaScript, Python, Java, C#, PHP)
+- ✅ Collaborative whiteboard with drawing and erasing tools
+- ✅ AI-powered resume interview question generation using fine-tuned LLM
+- ✅ No sign-up required - instant session creation
+- ✅ Dark/Light theme support
+- ✅ Cross-platform compatibility
+
+**Live Demo**: [https://www.synccode.live/](https://www.synccode.live/)
+
+---
+
+## 🛠️ Technology Stack
 
 ### Frontend
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **UI Components**: Shadcn/ui components
-- **Package Manager**: Yarn 4 with node-modules linker
 
-### Development & Deployment
-- **Environment**: Python virtual environment with pip
-- **Database**: In-memory SQLite (automatic fallback, no setup required)
-- **Scripts**: Cross-platform startup scripts (Windows/Linux)
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React.js | 19.0.0 | UI framework |
+| React Router DOM | 6.20.1 | Client-side routing |
+| CodeMirror | 5.65.18 | Code editor with syntax highlighting |
+| Konva.js | 9.3.0 | 2D canvas for whiteboard |
+| React Konva | 18.2.10 | React bindings for Konva |
+| Socket.IO Client | 4.8.1 | Real-time communication |
+| Tailwind CSS | 3.4.17 | Utility-first CSS framework |
+| Material-UI | 6.3.0 | UI component library |
+| React Player | 2.16.0 | Video streaming |
+| Axios | 1.7.9 | HTTP client |
+| Yjs | 13.6.21 | CRDT for conflict-free editing |
+| Liveblocks | 2.15.0 | Real-time collaboration infrastructure |
 
-##  Project Workflow
+### Backend
 
-### 1. Document Ingestion Process
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Node.js | Latest LTS | Runtime environment |
+| Express.js | 4.21.2 | Web framework |
+| Socket.IO | 4.8.1 | WebSocket server |
+| Multer | 1.4.5-lts.1 | File upload handling |
+| PDF Parse | 1.1.1 | PDF file parsing |
+| Mammoth | 1.8.0 | DOCX file parsing |
+
+### External Services
+
+| Service | Purpose |
+|---------|---------|
+| Piston API | Code execution engine |
+| Fine-tuned LLM | Interview question generation (local) |
+| WebRTC STUN Servers | Peer-to-peer connection establishment |
+
+### Real-time Technologies
+
+- **Socket.IO**: WebSocket-based bidirectional communication
+- **WebRTC**: Peer-to-peer video/audio streaming
+- **Yjs**: Conflict-free replicated data types for code sync
+- **Liveblocks**: Real-time collaboration infrastructure
+
+---
+
+## 🏗️ Architecture & System Flow
+
+### System Architecture
+
 ```
-Document Upload → Text Extraction → Chunking → Embedding Generation → Database Storage
+┌─────────────────────────────────────────────────────────────┐
+│                      Client (React)                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │   Home   │  │  Lobby   │  │   Room   │  │Whiteboard│   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+│       │             │             │             │          │
+│       └─────────────┴─────────────┴─────────────┘          │
+│                          │                                   │
+│              ┌───────────┴───────────┐                       │
+│              │   Socket.IO Client    │                       │
+│              │   WebRTC Peer         │                       │
+│              └───────────┬───────────┘                       │
+└──────────────────────────┼───────────────────────────────────┘
+                           │
+                           │ WebSocket / WebRTC
+                           │
+┌──────────────────────────┼───────────────────────────────────┐
+│                  Backend (Node.js)                             │
+│  ┌────────────────────────────────────────────────────────┐   │
+│  │           Express.js Server                            │   │
+│  │  ┌──────────────┐  ┌──────────────┐                  │   │
+│  │  │ Socket.IO    │  │ REST API     │                  │   │
+│  │  │ Server       │  │ Endpoints    │                  │   │
+│  │  └──────────────┘  └──────────────┘                  │   │
+│  └────────────────────────────────────────────────────────┘   │
+└──────────────────────────┼───────────────────────────────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+┌───────┴──────┐  ┌────────┴────────┐  ┌─────┴──────┐
+│ Piston API   │  │ Fine-tuned LLM  │  │ STUN       │
+│ (Code Exec)  │  │ (Local System)  │  │ Servers    │
+└──────────────┘  └─────────────────┘  └────────────┘
 ```
 
-1. **Upload**: User uploads document (PDF/TXT/JSON) or provides raw text
-2. **Extraction**: System extracts text content from the document
-3. **Chunking**: Text is split into manageable chunks (1000 chars with 200 char overlap)
-4. **Embedding**: Each chunk is converted to vector embeddings using AI services
-5. **Storage**: Document metadata and chunks are stored in the database
+### Data Flow Architecture
 
-### 2. Query Process
+#### Code Collaboration Flow
 ```
-Question → Embedding Generation → Similarity Search → Context Retrieval → AI Response
+User Types → CodeMirror → Yjs CRDT → Socket.IO → Server → Broadcast → Other Users → CodeMirror Update
 ```
 
-1. **Question Processing**: User's question is converted to vector embedding
-2. **Similarity Search**: System finds most relevant document chunks using vector similarity
-3. **Context Building**: Retrieved chunks are combined to form context
-4. **AI Response**: Context and question are sent to AI service for answer generation
-5. **Response**: Structured response with answer and source citations
+#### Video Conferencing Flow
+```
+User Initiates Call → WebRTC Offer → Socket.IO Signaling → Remote User → WebRTC Answer → Connection Established → Media Streams
+```
 
-### 3. API Endpoints
+#### Interview Question Generation Flow
+```
+Upload Resume/JD → File Parsing → Fine-tuned LLM (Local) → Question Generation → Display Questions
+```
 
-#### Document Management
-- `POST /api/v1/ingest/upload` - Upload and process documents
-- `POST /api/v1/text/add` - Add multiple text documents via JSON
-- `GET /api/v1/text/list` - List all documents
+#### Whiteboard Collaboration Flow
+```
+User Draws → Konva Canvas → Stroke Data → Socket.IO → Server → Broadcast → Other Users → Konva Render
+```
 
-#### Querying
-- `POST /api/v1/query/ask` - Query documents with natural language
-- `POST /api/v1/text/query` - Query text documents via JSON API
+### Component Architecture
 
-#### Health & Status
-- `GET /health` - API health check
-- `GET /` - API information
+```
+App.js
+├── Home.jsx (Landing Page)
+├── Lobby.jsx (Session Management)
+└── Room.jsx (Main Collaboration)
+    ├── EditorPage.js (Code Editor)
+    ├── Whiteboard.jsx (Collaborative Drawing)
+    ├── ResumeInterviewModal.jsx (AI Questions)
+    └── Video Call Components
+```
 
-##  Quick Start
+---
+
+## ✨ Features
+
+### 1. Real-Time Code Collaboration
+- Multi-user simultaneous editing
+- CodeMirror editor with syntax highlighting
+- Language support: JavaScript, Python, Java, C#, PHP
+- Real-time synchronization via Yjs CRDT
+- Code snippets for language switching
+
+### 2. Video Conferencing
+- WebRTC peer-to-peer video/audio
+- Screen sharing capability
+- Mute/unmute controls
+- Video on/off toggle
+- User admission system
+
+### 3. Code Execution
+- Multi-language execution via Piston API
+- Real-time output sharing
+- Error handling and display
+- Supported languages: JavaScript, Python, Java
+
+### 4. Collaborative Whiteboard
+- Real-time collaborative drawing
+- Pen tool with 10 color options
+- Eraser tool with adjustable size
+- Undo/redo functionality
+- Clear canvas option
+- Resizable panel
+
+### 5. AI-Powered Interview Questions
+- Resume upload (PDF/DOCX)
+- JD upload (PDF/DOCX/TXT) - UI ready
+- Fine-tuned LLM for question generation
+- Customizable difficulty levels (1-5)
+- Topic selection (Skills, Projects, Experience, etc.)
+- Question count selection (1-50)
+- Persistent question bank
+
+### 6. Session Management
+- UUID-based room IDs
+- Instant session creation
+- Easy room joining
+- Room ID copying
+- No authentication required
+
+---
+
+## 🤖 AI Model & Fine-Tuning
+
+### Model Information
+
+**Model Type**: Fine-tuned Large Language Model (LLM)  
+**Deployment**: Local System  
+**Model File**: `interview_model.gguf`  
+**Purpose**: Generate tailored interview questions from resumes
+
+### Fine-Tuning Details
+
+The model is fine-tuned specifically for interview question generation, trained on:
+- Resume data patterns
+- Interview question structures
+- Technical and behavioral question formats
+- Difficulty level variations
+- Topic-specific question generation
+
+### Model Capabilities
+
+- **Resume Analysis**: Extracts key information from uploaded resumes
+- **Question Generation**: Creates contextually relevant interview questions
+- **Difficulty Adaptation**: Adjusts question complexity based on user selection
+- **Topic Focus**: Generates questions focused on selected topics (Skills, Projects, Experience, etc.)
+- **Customizable Output**: Generates 1-50 questions based on user preference
+
+### Integration
+
+The fine-tuned model runs locally on the system and processes resume uploads to generate interview questions. The model receives:
+- Parsed resume text
+- Difficulty level (1-5)
+- Number of questions requested
+- Selected topics
+
+And generates tailored interview questions based on the resume content.
+
+---
+
+## 🚀 Setup & Installation
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- Yarn 4 (Corepack)
 
-### 1. Clone and Setup
+- Node.js (v14.0.0 or higher)
+- npm or yarn
+- Fine-tuned LLM model file (`interview_model.gguf`)
+- Modern web browser with WebRTC support
+
+### Installation Steps
+
+#### 1. Clone Repository
 ```bash
 git clone <repository-url>
-cd query-mind-ai
+cd SyncCodes
 ```
 
-### 2. Backend Setup
+#### 2. Backend Setup
 ```bash
-# Create virtual environment
-python -m venv .venv
-
-# Activate virtual environment
-# Windows:
-.\.venv\Scripts\Activate.ps1
-# Linux/Mac:
-source .venv/bin/activate
-
-# Install dependencies
 cd backend
-pip install -r requirements.txt
-
-# Set up environment variables
-cp env.example .env
-# Edit .env with your API keys
+npm install
+npm start
 ```
 
-### 3. Frontend Setup
+**Backend runs on**: `http://localhost:8000`
+
+#### 3. Frontend Setup
 ```bash
-cd frontend
-yarn install
+cd client
+npm install
+npm run dev
 ```
 
-### 4. Environment Configuration
-Create a `.env` file in the project root:
+**Frontend runs on**: `http://localhost:3000`
+
+#### 4. Model Setup
+- Ensure `interview_model.gguf` is in the project root
+- Configure model path in backend if needed
+- Model runs locally for question generation
+
+### Environment Variables
+
+**Backend** (`.env`):
 ```env
-ENVIRONMENT=development
-GROQ_API_KEY=your_groq_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
-APP_NAME=Unthinkable KBSE
-DEBUG=true
+PORT=8000
+MODEL_PATH=./interview_model.gguf
 ```
 
-**Note**: No database setup required! The application automatically uses an in-memory database that works out of the box.
-
-### 5. Run the Application
-
-#### Option A: Simple Development (Recommended)
-```bash
-# Windows
-start-dev.bat
-
-# Linux/Mac
-./start-dev.sh
+**Frontend** (`.env`):
+```env
+REACT_APP_API_URL=http://localhost:8000
 ```
 
-#### Option B: Manual Start
-```bash
-# Terminal 1 - Backend
-cd backend
-python main.py
+---
 
-# Terminal 2 - Frontend
-cd frontend
-yarn dev
-```
+## 📸 Project Screenshots
 
+### Landing Page
+<!-- Add screenshot: Landing page with hero section and features -->
+![Landing Page](screenshots/landing-page.png)
+*Landing page with animated hero section and feature showcase*
 
-### 6. Access the Application
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://127.0.0.1:8000
-- **API Docs**: http://127.0.0.1:8000/docs
+### Lobby Page
+<!-- Add screenshot: Session creation and joining interface -->
+![Lobby Page](screenshots/lobby-page.png)
+*Session management with create and join options*
 
-##  Usage Examples
+### Collaboration Room
+<!-- Add screenshot: Main room with video feeds and code editor -->
+![Collaboration Room](screenshots/collaboration-room.png)
+*Main collaboration interface with video feeds and code editor*
 
-### 1. Web Interface
-1. Open http://localhost:5173
-2. Upload a document (PDF, TXT, or JSON)
-3. Ask questions about the document content
-4. View AI-generated answers with source citations
+### Code Editor
+<!-- Add screenshot: CodeMirror editor with syntax highlighting -->
+![Code Editor](screenshots/code-editor.png)
+*Real-time collaborative code editor with syntax highlighting*
 
-### 2. JSON API Usage
+### Whiteboard
+<!-- Add screenshot: Collaborative whiteboard with drawing tools -->
+![Whiteboard](screenshots/whiteboard.png)
+*Collaborative whiteboard with pen, eraser, and color palette*
 
-#### Add Documents
-```bash
-curl -X POST "http://127.0.0.1:8000/api/v1/text/add" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "documents": [
-      {
-        "title": "Python Guide",
-        "content": "Python is a programming language...",
-        "category": "programming"
-      }
-    ]
-  }'
-```
+### Interview Questions
+<!-- Add screenshot: Resume upload and generated questions -->
+![Interview Questions](screenshots/interview-questions.png)
+*Resume upload interface and AI-generated interview questions*
 
-#### Query Documents
-```bash
-curl -X POST "http://127.0.0.1:8000/api/v1/text/query" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "question": "What is Python?",
-    "max_chunks": 5,
-    "max_tokens": 500
-  }'
-```
+### Video Conferencing
+<!-- Add screenshot: Video call interface with controls -->
+![Video Call](screenshots/video-call.png)
+*WebRTC video conferencing with screen sharing options*
 
-## 🔧 Configuration
+---
 
-### API Keys Setup
-1. **Groq API**: Get your API key from [Groq Console](https://console.groq.com/)
-2. **Gemini API**: Get your API key from [Google AI Studio](https://makersuite.google.com/)
+## ⚠️ Known Issues
 
-### Database Configuration
-- **Development & Production**: Uses in-memory SQLite automatically (no setup required)
-- **Optional**: PostgreSQL can be configured in `.env` if needed for persistent storage
+1. **Microphone Audio Overlap**: Sound overlapping during video calls (being addressed)
+2. **Session Termination**: Room ID persists after session ends (cleanup needed)
+3. **Library Imports**: Code execution doesn't support external library imports (planned feature)
 
-### Frontend Configuration
-- **API URL**: Configured in `frontend/src/config/api.ts`
-- **Theme**: Customizable in `frontend/src/constants/default-theme.ts`
+---
 
-##  Project Structure
+## 🔮 Future Enhancements
 
-```
-query-mind-ai/
-├── backend/                 # FastAPI backend
-│   ├── api/                # API endpoints
-│   │   ├── ingest.py       # Document ingestion
-│   │   ├── query.py        # Document querying
-│   │   └── text_documents.py # JSON API
-│   ├── config.py           # Configuration
-│   ├── database.py         # Database connection
-│   ├── database_memory.py  # In-memory database
-│   ├── main.py            # Application entry point
-│   └── requirements.txt   # Python dependencies
-├── frontend/              # React frontend
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── pages/         # Page components
-│   │   ├── services/      # API services
-│   │   └── config/        # Frontend configuration
-│   ├── package.json       # Node dependencies
-│   └── vite.config.ts     # Vite configuration
-├── start-dev.bat         # Windows startup script
-├── start-dev.sh          # Linux/Mac startup script
-└── README.md             # This file
-```
+1. **Library Import Support**: Enable importing external libraries in code execution
+2. **Advanced Editor Features**: Autocomplete, IntelliSense, code formatting
+3. **Enhanced Collaboration**: Text chat, code annotations, version history
+4. **User Management**: Optional accounts, session history, favorites
+5. **JD Integration**: Full JD processing and integration with question generation
+6. **Performance Optimization**: Code editor optimization, connection reliability improvements
 
-##  Troubleshooting
+---
 
-### Common Issues
+## 📊 Technical Specifications
 
-1. **502 API Errors**: Check that API keys are properly configured in `.env`
-2. **Module Not Found**: Ensure virtual environment is activated
-3. **Port Conflicts**: Change ports in configuration if 8000 or 5173 are in use
-4. **Database Connection**: Uses in-memory database by default (no external dependencies)
+### Performance Metrics
+- **Code Sync Latency**: < 100ms
+- **Video Call Quality**: HD (720p/1080p)
+- **Question Generation**: 5-10 seconds
+- **Whiteboard Sync**: Real-time (< 50ms)
 
-### Debug Mode
-Set `DEBUG=true` in `.env` to enable:
-- Detailed error messages
-- Auto-reload on file changes
-- Enhanced logging
+### Browser Compatibility
+- ✅ Chrome/Edge (latest)
+- ✅ Firefox (latest)
+- ✅ Safari (latest)
+- ❌ Internet Explorer (not supported)
 
-## 🤝 Contributing
+### System Requirements
+- **Backend**: Node.js 14+, 2GB RAM minimum
+- **Frontend**: Modern browser with WebRTC support
+- **Model**: Local system with sufficient resources for LLM inference
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+---
 
+## 📄 License
 
-## Acknowledgments
+This project is licensed under a custom **All Rights Reserved** license.  
+No reproduction, commercial use, or distribution is permitted without written permission.  
+Contact: **c.gourab180@gmail.com**
 
-- FastAPI for the excellent Python web framework
-- React and Vite for the modern frontend stack
-- Groq and Google for AI services
-- Shadcn/ui for beautiful UI components
+---
 
-## Made with ❤️ by Harshita Singh
+## 📞 Contact & Support
+
+- **Email**: c.
+- **Live Demo**: [https://www.synccode.live/](https://www.synccode.live/)
+- **Demo Video**: [Watch on YouTube](https://youtu.be/IiPcbEWGCsU)
+
+---
+
+**Last Updated**: December 2024  
+**Version**: 2.0.0  
+**Status**: Active Development
+

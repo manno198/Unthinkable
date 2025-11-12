@@ -302,38 +302,20 @@ REACT_APP_API_URL=http://localhost:8000
 
 ### Landing Page
 <!-- Add screenshot: Landing page with hero section and features -->
-![Landing Page](screenshots/landing-page.png)
+![Landing Page]<img width="1914" height="925" alt="Screenshot 2025-11-12 225357" src="https://github.com/user-attachments/assets/874b5003-50a9-4f16-88d7-4d4bd3c72f7d" />
+
 *Landing page with animated hero section and feature showcase*
-
-### Lobby Page
-<!-- Add screenshot: Session creation and joining interface -->
-![Lobby Page](screenshots/lobby-page.png)
-*Session management with create and join options*
-
-### Collaboration Room
-<!-- Add screenshot: Main room with video feeds and code editor -->
-![Collaboration Room](screenshots/collaboration-room.png)
-*Main collaboration interface with video feeds and code editor*
 
 ### Code Editor
 <!-- Add screenshot: CodeMirror editor with syntax highlighting -->
-![Code Editor](screenshots/code-editor.png)
+![Code Editor]<img width="1919" height="915" alt="Screenshot 2025-11-12 225312" src="https://github.com/user-attachments/assets/970525ea-17b0-4ff4-bab6-e2e04633ce56" />
+
 *Real-time collaborative code editor with syntax highlighting*
 
 ### Whiteboard
 <!-- Add screenshot: Collaborative whiteboard with drawing tools -->
-![Whiteboard](screenshots/whiteboard.png)
+![Whiteboard]<img width="1908" height="899" alt="Screenshot 2025-11-12 225045" src="https://github.com/user-attachments/assets/3f2abcc5-b8a0-4601-92d6-60f92b102c5c" />
 *Collaborative whiteboard with pen, eraser, and color palette*
-
-### Interview Questions
-<!-- Add screenshot: Resume upload and generated questions -->
-![Interview Questions](screenshots/interview-questions.png)
-*Resume upload interface and AI-generated interview questions*
-
-### Video Conferencing
-<!-- Add screenshot: Video call interface with controls -->
-![Video Call](screenshots/video-call.png)
-*WebRTC video conferencing with screen sharing options*
 
 ---
 
@@ -363,12 +345,6 @@ REACT_APP_API_URL=http://localhost:8000
 - **Video Call Quality**: HD (720p/1080p)
 - **Question Generation**: 5-10 seconds
 - **Whiteboard Sync**: Real-time (< 50ms)
-
-### Browser Compatibility
-- ✅ Chrome/Edge (latest)
-- ✅ Firefox (latest)
-- ✅ Safari (latest)
-
 
 ### System Requirements
 - **Backend**: Node.js 14+, 2GB RAM minimum

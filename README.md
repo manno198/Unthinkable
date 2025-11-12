@@ -368,7 +368,7 @@ REACT_APP_API_URL=http://localhost:8000
 - ✅ Chrome/Edge (latest)
 - ✅ Firefox (latest)
 - ✅ Safari (latest)
-- ❌ Internet Explorer (not supported)
+
 
 ### System Requirements
 - **Backend**: Node.js 14+, 2GB RAM minimum
@@ -377,19 +377,6 @@ REACT_APP_API_URL=http://localhost:8000
 
 ---
 
-## 📄 License
-
-This project is licensed under a custom **All Rights Reserved** license.  
-No reproduction, commercial use, or distribution is permitted without written permission.  
-Contact: **c.gourab180@gmail.com**
-
----
-
-## 📞 Contact & Support
-
-- **Email**: c.
-- **Live Demo**: [https://www.synccode.live/](https://www.synccode.live/)
-- **Demo Video**: [Watch on YouTube](https://youtu.be/IiPcbEWGCsU)
 
 ---
 

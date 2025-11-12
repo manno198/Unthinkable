@@ -354,9 +354,4 @@ REACT_APP_API_URL=http://localhost:8000
 ---
 
 
----
-
-**Last Updated**: December 2024  
-**Version**: 2.0.0  
-**Status**: Active Development
 
